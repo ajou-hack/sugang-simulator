@@ -10,15 +10,15 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="format-detection" content="telephone=no">
 
-<link rel="stylesheet" href="{{ url_for('static', filename='css/layout.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/spmodal.css') }}">
-<link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', path='css/layout.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', path='css/spmodal.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', path='css/loading.css') }}">
 
-<link rel="stylesheet" href="{{ url_for('static', filename='css/crownix-viewer.min.css') }}">
-<script language="javascript" src="{{ url_for('static', filename='script/jquery.lastest.js') }}"></script>
-<script language="javascript" src="{{ url_for('static', filename='script/common.js') }}"></script>
-<script language="javascript" src="{{ url_for('static', filename='script/message.js') }}"></script>
-<script language="javascript" src="{{ url_for('static', filename='script/crownix-viewer.min.js') }}"></script>
+<link rel="stylesheet" href="{{ url_for('static', path='css/crownix-viewer.min.css') }}">
+<script language="javascript" src="{{ url_for('static', path='script/jquery.lastest.js') }}"></script>
+<script language="javascript" src="{{ url_for('static', path='script/common.js') }}"></script>
+<script language="javascript" src="{{ url_for('static', path='script/message.js') }}"></script>
+<script language="javascript" src="{{ url_for('static', path='script/crownix-viewer.min.js') }}"></script>
 
 <script type="text/javascript">
 <!--
@@ -46,7 +46,7 @@ else $('title').html(message.get('title'));
 
 
 	             <a href="#" class="h-logo-link">
-	                 <img src="{{ url_for('static', filename='images/white-logo.png') }}" alt="아주대로고">
+	                 <img src="{{ url_for('static', path='images/white-logo.png') }}" alt="아주대로고">
 	             </a>
 	             <div class="top-menu">
 	                 <ul id="menu">
@@ -1246,7 +1246,7 @@ function load(){
 }
 </script>
 
-<script language="javascript" src="{{ url_for('static', filename='script/application.js') }}"></script>
+<script language="javascript" src="{{ url_for('static', path='script/application.js') }}"></script>
 
     </div>
 
