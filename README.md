@@ -1,40 +1,29 @@
-# potential-disco
-연습용 수강신청 사이트입니다. 
+# 수강신청 시뮬레이터
 
-<img width="1680" alt="스크린샷 2022-01-30 오후 12 46 49" src="https://user-images.githubusercontent.com/98575585/151685906-67aca09d-ed39-4fca-aa82-8a0206ea9531.png">
+아주대학교 수강신청 연습을 위한 시뮬레이터입니다. (forked from [software-wanderer/potential-disco](https://github.com/software-wanderer/potential-disco)) 수강신청 외에 다른 기능 (여석 조회, 로그아웃, 공지사항 등) 은 구현되어있지 않습니다.
 
-Flask로 작성된 어플리케이션입니다. 프로그램을 실행하고 서버 시작을 누르면 http://127.0.0.1:5000/ 에서 연습할 수 있습니다. 
-수강신청 외에 다른 기능 (여석 조회나 로그아웃, 공지사항 등등..) 은 구현되어있지 않습니다. 무한 로딩창이 뜰 경우 새로고침 해주세요. 
+![](https://user-images.githubusercontent.com/6410412/218300888-2907ce24-6427-40eb-9063-97883080e9ce.png)
 
-## Main functions 
-* 2022년 1학기에 개설된 실제 과목들이 연동되었습니다. 실제 과목코드를 입력해보세요. 
-* 현실감을 위해 이름과 학번, 학년, 최대학점수 등을 지정해줄 수 있습니다. **입력된 개인정보는 절대로 다른 서버로 전송되지 않습니다.** 따로 설정하지 않아도 기본값(홍길동)으로 사용할 수 있습니다.
-* 수강신청 페이지 시작 시간을 지정해줄 수 있습니다. 서버 시간은 자신의 컴퓨터 시간과 동일합니다.
+* 2022년 1학기에 개설된 실제 과목들이 연동되어 있습니다. 과목을 추가 또는 수정하려면 `static/db/db.xlsx` 파일을 변경해주세요.
+* `main.py` 파일에서 수강신청 시작 시각을 지정해줄 수 있습니다. 부가적으로 이름, 학번, 학년, 최대신청학점 등을 지정할 수도 있습니다.
+* **입력된 정보는 절대로 다른 서버로 전송되지 않습니다.** 따로 설정하지 않아도 기본값(홍길동)으로 사용할 수 있습니다.
 
-## How to Run
-### 파이썬에 처음인 분들을 위한 방법. 
-파이썬 없이도 어플리케이션을 쉽게 실행할 수 있도록 exe 파일을 만들었습니다. 아래 주소로 들어가서 가이드를 확인해보세요. 
-https://github.com/software-wanderer/potential-disco/releases/tag/v1.0.0
+## Getting Started
 
-### 파이썬을 할줄 아시는 분들을 위한 방법. 
-터미널(cmd)를 열고 아래 Installation과  Run 명령어들을 차례대로 실행하세요. 
+1. 프로젝트를 내려받고 필요한 패키지를 설치합니다.
+   ```sh
+   $ git clone https://github.com/ajou-hack/sugang-simulator
+   $ cd sugang-simulator
+   $ pip install -r requirements.txt
+   ```
+2. 서버를 실행합니다.
+   ```sh
+   $ make
+   ```
+3. 브라우저에서 '127.0.0.1:8000'에 접속합니다. 서버 실행 시각으로부터 1분 뒤 0초에 수강신청이 시작됩니다. 예를 들어, 13시 10분 37초에 서버를 실행했다면 13시 11분 0초에 수강신청이 시작됩니다.
 
-## Prerequisite
-* `numpy` ~= 1.22.1
-* `pandas` ~= 1.4.0
-* `flask` ~= 2.0.2
-* `pyqt5` ~= 5.15.6
-* `openpyxl` ~= 3.0.9
+## Screenshots
 
+![](https://user-images.githubusercontent.com/6410412/218300879-9567bf3e-4895-456d-8629-ed6dd89336d6.png)
 
-## Installation
-```Shell
-git clone https://github.com/software-wanderer/potential-disco
-cd potential-disco
-pip install -r requirements.txt
-```
-
-## Run
-```Shell
-python3 main.py
-```
+![](https://user-images.githubusercontent.com/6410412/218300921-e1b6b251-c676-4661-a3c0-10150693412d.png)
