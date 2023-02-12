@@ -11,31 +11,45 @@ import os
 import re
 
 
-class Profile:
-    name = "홍길동"
-    std_number = "202300000"
-    std_dept = "미디어"
-    grade = "1"
-    max_credits = "21"
-    start_date = datetime.datetime.strptime("2020-01-01", "%Y-%m-%d")
+class State:
+    def __init__(self):
+        self.security_number = ""
+        self.db = pd.read_excel(
+            "static/db/db.xlsx",
+            engine="openpyxl",
+            header=1,
+            usecols="B, C, F, G, H, M",
+            names=["sbjName", "sbjCode", "profName", "credit", "hours", "time"],
+        )
+        self.takingLessonsFrame = pd.DataFrame(
+            columns=["sbjName", "sbjCode", "profName", "credit", "hours", "time"]
+        )
 
-    security_number = ""
-    db = pd.read_excel(
-        "static/db/db.xlsx",
-        engine="openpyxl",
-        header=1,
-        usecols="B, C, F, G, H, M",
-        names=["sbjName", "sbjCode", "profName", "credit", "hours", "time"],
-    )
-    takingLessonsFrame = pd.DataFrame(
-        columns=["sbjName", "sbjCode", "profName", "credit", "hours", "time"]
-    )
+
+class Profile:
+    def __init__(self, state: State):
+        # 수강 신청 시작 시간을 설정합니다. (Default: 1분 뒤 0초)
+        # Examples:
+        #   - 특정 날짜, 시각: datetime.strptime('2023-02-12 17:20:00', '%Y-%m-%d %H:%M:%S')
+        #   - 오늘 특정 시각: datetime.datetime.now().replace(hour=17, minute=30)
+        self.start_date = (
+            datetime.datetime.now() + datetime.timedelta(minutes=1)
+        ).replace(second=0)
+
+        self.name = "홍길동"
+        self.std_number = "202300000"
+        self.std_dept = "미디어학과"
+        self.grade = "1"
+        self.max_credits = "21"
+
+        self.state = state
 
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-profile = Profile()
+state = State()
+profile = Profile(state)
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -65,10 +79,10 @@ class SaveTlsnNoAplyArgs(BaseModel):
 @app.post("/saveTlsnNoAply.ajax")
 def saveTlsnNoAply(args: SaveTlsnNoAplyArgs):
     # 인증번호 맞는지 확인
-    if profile.security_number == args.securityNumber:
+    if profile.state.security_number == args.securityNumber:
         # 입력된 과목 코드로부터 슬롯 하나 때와서 slot 변수에 저장
         sbjCode = args.strTlsnNo.upper()
-        slot = profile.db.loc[profile.db["sbjCode"] == sbjCode]
+        slot = profile.state.db.loc[profile.state.db["sbjCode"] == sbjCode]
 
         # 과목 이름 추출. 만약 검색된 이름이 없다면
         sbjName = slot["sbjName"].values[0] if slot["sbjName"].shape[0] == 1 else None
@@ -76,22 +90,24 @@ def saveTlsnNoAply(args: SaveTlsnNoAplyArgs):
             return {"RESULT_MESG": f"과목코드가 올바르지 않습니다.", "MESSAGE_CODE": -1}
 
         # 최대 학점 제한을 넘은 경우
-        elif profile.takingLessonsFrame["credit"].sum() + slot["credit"].sum() > int(
-            profile.max_credits
-        ):
+        elif profile.state.takingLessonsFrame["credit"].sum() + slot[
+            "credit"
+        ].sum() > int(profile.max_credits):
             return {"RESULT_MESG": f"최대 이수 학점을 초과하였습니다", "MESSAGE_CODE": -1}
 
         # 해당 과목이 이미 수강중인 과목이라면
         elif (
-            profile.takingLessonsFrame.loc[
-                profile.takingLessonsFrame["sbjName"] == sbjName
+            profile.state.takingLessonsFrame.loc[
+                profile.state.takingLessonsFrame["sbjName"] == sbjName
             ].shape[0]
             > 0
         ):
             return {"RESULT_MESG": f"이미 수강중인 과목입니다.", "MESSAGE_CODE": -1}
 
         else:
-            profile.takingLessonsFrame = pd.concat([profile.takingLessonsFrame, slot])
+            profile.state.takingLessonsFrame = pd.concat(
+                [profile.state.takingLessonsFrame, slot]
+            )
             return {"RESULT_MESG": f"[{sbjName}]: 신청완료되었습니다.", "MESSAGE_COD": 1}
     else:
         return {"RESULT_MESG": f"인증번호를 정확히 입력하세요", "MESSAGE_CODE": -1}
@@ -100,20 +116,20 @@ def saveTlsnNoAply(args: SaveTlsnNoAplyArgs):
 @app.post("/findTakingLessonInfo.ajax")
 def findTakingLessonInfo():
     takingLessonInfoList = []
-    for i in range(profile.takingLessonsFrame.shape[0]):
+    for i in range(profile.state.takingLessonsFrame.shape[0]):
         SBJT_POSI_FG = "U0201001"
         TLSN_DEL_POSB_YN = "1"
         CLSS_NO = "1"
-        SBJT_KOR_NM = profile.takingLessonsFrame["sbjName"].values[i]
-        TLSN_NO = profile.takingLessonsFrame["sbjCode"].values[i]
-        MA_LECTURER_KOR_NM = profile.takingLessonsFrame["profName"].values[i]
-        PNT = profile.takingLessonsFrame["credit"].values[i]
-        TM = profile.takingLessonsFrame["hours"].values[i]
-        LT_TM_NM = profile.takingLessonsFrame["time"].values[i]
+        SBJT_KOR_NM = profile.state.takingLessonsFrame["sbjName"].values[i]
+        TLSN_NO = profile.state.takingLessonsFrame["sbjCode"].values[i]
+        MA_LECTURER_KOR_NM = profile.state.takingLessonsFrame["profName"].values[i]
+        PNT = profile.state.takingLessonsFrame["credit"].values[i]
+        TM = profile.state.takingLessonsFrame["hours"].values[i]
+        LT_TM_NM = profile.state.takingLessonsFrame["time"].values[i]
 
         # 시간표 str로 장소를 뽑아내 room에 저장.
         time = LT_TM_NM
-        if profile.takingLessonsFrame.isnull()["time"].values[0] == True:
+        if profile.state.takingLessonsFrame.isnull()["time"].values[0] == True:
             time = "()"
         room = re.compile(r"\(.*?\)").search(time)
         if room is not None:
@@ -154,12 +170,12 @@ class DeleteOpenLectureRsgArgs(BaseModel):
 def deleteOpenLectureReg(args: DeleteOpenLectureRsgArgs):
     # app.takingLessonsFrame 에서 과목 코드에 해당하는 슬롯 하나 때와서 인덱스 추출 후 index 변수에 저장
     sbjCode = args.strTlsnNo
-    slot = profile.takingLessonsFrame.loc[
-        profile.takingLessonsFrame["sbjCode"] == sbjCode
+    slot = profile.state.takingLessonsFrame.loc[
+        profile.state.takingLessonsFrame["sbjCode"] == sbjCode
     ]
     index = slot.index[0] if slot.shape[0] == 1 else None
     if index is not None:
-        profile.takingLessonsFrame.drop([index], axis=0, inplace=True)
+        profile.state.takingLessonsFrame.drop([index], axis=0, inplace=True)
         return {"RESULT_MESG": f"[{sbjCode}]: 삭제완료되었습니다.", "MESSAGE_CODE": 1}
     else:
         return {"RESULT_MESG": f"과목이 존재하지 않습니다.", "MESSAGE_CODE": -1}
@@ -173,7 +189,7 @@ async def getCaptchaAnswer():
 @app.post("/captchaAnswer")
 async def postCaptchaAnswer(req: Request):
     answer = (await req.body())[-4:].decode("utf-8")
-    if profile.security_number == answer:
+    if profile.state.security_number == answer:
         return "200"
     else:
         return "300"
@@ -183,7 +199,7 @@ async def postCaptchaAnswer(req: Request):
 async def captchaImg():
     img_list = glob.glob("static/images/captcha/*.png")
     img_path = random.sample(img_list, 1)
-    profile.security_number = os.path.basename(img_path[0])[0:4]
+    profile.state.security_number = os.path.basename(img_path[0])[0:4]
     with open(img_path[0], "rb") as img:
         img_bytes = img.read().__bytes__()
     return Response(content=img_bytes, media_type="image/png")
