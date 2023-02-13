@@ -28,7 +28,7 @@ class State:
 
 class Profile:
     def __init__(self, state: State):
-        # 수강 신청 시작 시간을 설정합니다. (Default: 1분 뒤 0초)
+        # 수강신청 시작 시각을 설정합니다. (Default: 1분 뒤 정각)
         # Examples:
         #   - 특정 날짜, 시각: datetime.strptime('2023-02-12 17:20:00', '%Y-%m-%d %H:%M:%S')
         #   - 오늘 특정 시각: datetime.datetime.now().replace(hour=17, minute=30)
@@ -56,7 +56,7 @@ profile = Profile(state)
 async def index(req: Request):
     templates = Jinja2Templates(directory="templates")
     html = "index_none.html"
-    if datetime.datetime.now() > profile.start_date:
+    if datetime.datetime.now() >= profile.start_date:
         html = "index.html"
     return templates.TemplateResponse(
         html,
