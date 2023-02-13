@@ -1,6 +1,6 @@
 # 수강신청 시뮬레이터
 
-아주대학교 수강신청 연습을 위한 시뮬레이터입니다. (forked from [software-wanderer/potential-disco](https://github.com/software-wanderer/potential-disco)) 수강신청 외에 다른 기능 (여석 조회, 로그아웃, 공지사항 등) 은 구현되어있지 않습니다.
+아주대학교 수강신청 연습을 위한 시뮬레이터입니다. (forked from [software-wanderer/potential-disco](https://github.com/software-wanderer/potential-disco)) 수강신청 외에 공지사항, 개인시간표, 여석조회 등 다른 기능은 구현되어있지 않습니다.
 
 ![](https://user-images.githubusercontent.com/6410412/218300888-2907ce24-6427-40eb-9063-97883080e9ce.png)
 
@@ -20,7 +20,7 @@
    ```sh
    $ make
    ```
-3. 브라우저에서 '127.0.0.1:8000'에 접속합니다. 서버 실행 시각으로부터 1분 뒤 0초에 수강신청이 시작됩니다. 예를 들어, 13시 10분 37초에 서버를 실행했다면 13시 11분 0초에 수강신청이 시작됩니다.
+3. 브라우저에서 '127.0.0.1:8000'에 접속합니다. 서버 실행 시각으로부터 1분 뒤 정각에 수강신청이 시작됩니다. 예를 들어, 13시 10분 37초에 서버를 실행했다면 13시 11분 0초에 수강신청이 시작됩니다.
 
 ## Screenshots
 
