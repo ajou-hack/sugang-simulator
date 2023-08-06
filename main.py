@@ -58,7 +58,7 @@ async def index(req: Request):
     templates = Jinja2Templates(directory="templates")
     html = "index_none.html"
     if datetime.datetime.now() >= profile.start_date:
-        time.sleep(secs=random.randrange(0, 4))
+        time.sleep(random.randrange(0, 4))
         html = "index.html"
     return templates.TemplateResponse(
         html,
